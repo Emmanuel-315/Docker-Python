@@ -100,8 +100,10 @@ database_students.sql     # Datos iniciales para PostgreSQL
 
 <img width="1080" height="260" alt="image" src="https://github.com/user-attachments/assets/563e08f4-ee8e-46f8-9658-7f4c28c9063e" />
 
+----
 
 <img width="1262" height="518" alt="image" src="https://github.com/user-attachments/assets/4dbe13a3-2460-4328-b7ab-1796843b6c7f" />
 
+----
 
 <img width="1892" height="387" alt="image" src="https://github.com/user-attachments/assets/6ecbc421-49bf-48d3-a621-6d56b4c03d1d" />
