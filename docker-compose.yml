@@ -1,0 +1,63 @@
+
+services:
+  # Servicio de la base de datos MySQL
+  mysql:
+    # Imagen oficial de MySQL versión 8.4
+    image: mysql:8.4
+
+    # Variables para configurar la base de datos
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_USER: postgres
+      MYSQL_PASSWORD: postgres
+      MYSQL_DATABASE: db
+
+    # Archivos y almacenamiento de la base de datos
+    volumes:
+      # Ejecuta este archivo SQL al crear la base por primera vez
+      - ./database_students.sql:/docker-entrypoint-initdb.d/database_students.sql:ro
+
+      # Conserva los datos aunque se reinicie el contenedor
+      - mysql_data:/var/lib/mysql
+
+    # Puerto de MySQL: equipo local y contenedor
+    ports:
+      - "3307:3306"
+
+    # Comprueba que MySQL esté listo para recibir conexiones
+    healthcheck:
+      test: ["CMD-SHELL", "mysqladmin ping -h localhost -uroot -p$$MYSQL_ROOT_PASSWORD --silent"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+      start_period: 20s
+
+  # Servicio de la aplicación Python
+  pythonapp:
+    # Construye la aplicación usando el Dockerfile
+    build: .
+
+    # Espera a que MySQL esté disponible
+    depends_on:
+      mysql:
+        condition: service_healthy
+
+    # Puerto de la aplicación Python
+    ports:
+      - "5001:5001"
+
+    # Comparte los archivos del proyecto con el contenedor
+    volumes:
+      - .:/app
+
+    # Variables que Python utilizará para conectarse a MySQL
+    environment:
+      DB_HOST: mysql
+      DB_PORT: 3306
+      DB_USER: postgres
+      DB_PASSWORD: postgres
+      DB_NAME: db
+
+# Volumen persistente para guardar los datos de MySQL
+volumes:
+  mysql_data:
